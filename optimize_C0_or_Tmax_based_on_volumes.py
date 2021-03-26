@@ -8,7 +8,7 @@ import time
 import numpy
 import nlopt
 
-from wait_for_job_to_complete import *
+from .wait_for_job_to_complete import *
 
 ######################################################### EXCEPTIONS ###
 
@@ -35,18 +35,18 @@ class case_for_C0_optimization:
         self.tol = tol
 
     def disp(self):
-        print "*** name = " + self.name
-        print "*** dia_or_sys = dia ***"
-        print "*** V_ES = " + str(self.V_ES) + " mm³ ***"
-        print "*** V_ED = " + str(self.V_ED) + " mm³ ***"
-        print "*** EF = " + str(self.EF) + " % ***"
-        print "*** P_dia = " + str(self.target) + " mmHg ***"
-        print "*** B0 = " + str(self.B0) + " ***"
-        print "*** B1 = " + str(self.B1) + " ***"
-        print "*** B2 = " + str(self.B2) + " ***"
-        print "*** C0_ini = " + str(self.param_ini) + " kPa ***"
-        print "*** C0_min = " + str(self.param_min) + " kPa ***"
-        print "*** C0_max = " + str(self.param_max) + " kPa ***"
+        print("*** name = " + self.name)
+        print("*** dia_or_sys = dia ***")
+        print("*** V_ES = " + str(self.V_ES) + " mm³ ***")
+        print("*** V_ED = " + str(self.V_ED) + " mm³ ***")
+        print("*** EF = " + str(self.EF) + " % ***")
+        print("*** P_dia = " + str(self.target) + " mmHg ***")
+        print("*** B0 = " + str(self.B0) + " ***")
+        print("*** B1 = " + str(self.B1) + " ***")
+        print("*** B2 = " + str(self.B2) + " ***")
+        print("*** C0_ini = " + str(self.param_ini) + " kPa ***")
+        print("*** C0_min = " + str(self.param_min) + " kPa ***")
+        print("*** C0_max = " + str(self.param_max) + " kPa ***")
 
     def param_name(self):
         return "C0"
@@ -68,17 +68,17 @@ class case_for_Tmax_optimization:
         self.tol = tol
 
     def disp(self):
-        print "*** name = " + self.name
-        print "*** dia_or_sys = sys ***"
-        print "*** EF = " + str(self.EF) + " % ***"
-        print "*** C0 = " + str(self.C0) + " kPa ***"
-        print "*** B0 = " + str(self.B0) + " ***"
-        print "*** B1 = " + str(self.B1) + " ***"
-        print "*** B2 = " + str(self.B2) + " ***"
-        print "*** P_sys = " + str(self.target) + " mmHg ***"
-        print "*** Tmax_ini = " + str(self.param_ini) + " kPa ***"
-        print "*** Tmax_min = " + str(self.param_min) + " kPa ***"
-        print "*** Tmax_max = " + str(self.param_max) + " kPa ***"
+        print("*** name = " + self.name)
+        print("*** dia_or_sys = sys ***")
+        print("*** EF = " + str(self.EF) + " % ***")
+        print("*** C0 = " + str(self.C0) + " kPa ***")
+        print("*** B0 = " + str(self.B0) + " ***")
+        print("*** B1 = " + str(self.B1) + " ***")
+        print("*** B2 = " + str(self.B2) + " ***")
+        print("*** P_sys = " + str(self.target) + " mmHg ***")
+        print("*** Tmax_ini = " + str(self.param_ini) + " kPa ***")
+        print("*** Tmax_min = " + str(self.param_min) + " kPa ***")
+        print("*** Tmax_max = " + str(self.param_max) + " kPa ***")
 
     def param_name(self):
         return "Tmax"
@@ -95,22 +95,22 @@ def cost_function_error_for_C0_or_Tmax_optimization(x, dx):
     # num_iter
     global num_iter
     num_iter += 1
-    print "* num_iter = " +  str(num_iter) + " *"
+    print("* num_iter = " +  str(num_iter) + " *")
 
     # param
     param = x[0]
     global case
-    print case.param_name() + " = " + str(param) + " kPa"
+    print(case.param_name() + " = " + str(param) + " kPa")
 
     # parameter variation
     global param_old
     if (num_iter > 1):
-        print case.param_name() + "_old = " + str(param_old) + " kPa"
+        print(case.param_name() + "_old = " + str(param_old) + " kPa")
         if (param_old > 0):
             param_rel_var = (param-param_old)/param_old
         else:
             param_rel_var = 1.
-        print case.param_name() + "_rel_var = " + str(100*param_rel_var) + " %"
+        print(case.param_name() + "_rel_var = " + str(100*param_rel_var) + " %")
 
     # run job
     os.system("rm -f Heart.*")
@@ -153,11 +153,11 @@ def cost_function_error_for_C0_or_Tmax_optimization(x, dx):
     # extract data
     os.system("abq6132 python ../extract_fluid_cavity_final_pressure.py Heart")
     P = float(open('Heart.pressure.dat', 'r').read())/0.133322
-    print "P = " + str(P) + " mmHg"
+    print("P = " + str(P) + " mmHg")
 
     # compute error
     error = (P-case.target)/case.target
-    print "P_err = " + str(100*error) + " %"
+    print("P_err = " + str(100*error) + " %")
 
     # save error
     if (num_iter == 1):
@@ -209,9 +209,9 @@ def optimize_C0_or_Tmax_based_on_volumes(cases):
             param_old = 0.
             opt.optimize([case.param_ini])
         except ConvergedOptimizationException:
-            print "ConvergedOptimizationException"
+            print("ConvergedOptimizationException")
             global sol
             return sol
         except FailedComputationException:
-            print "FailedComputationException"
+            print("FailedComputationException")
             raise FailedComputationException

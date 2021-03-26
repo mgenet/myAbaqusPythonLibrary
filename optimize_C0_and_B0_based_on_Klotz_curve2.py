@@ -10,7 +10,7 @@ import sympy
 
 import nlopt
 
-from optimize_C0_or_Tmax_based_on_volumes import *
+from .optimize_C0_or_Tmax_based_on_volumes import *
 
 ######################################################### EXCEPTIONS ###
 
@@ -43,18 +43,18 @@ def cost_function_for_C0_and_B0_optimization2(x, dx):
     # num_iter_for_B0_optimization
     global num_iter_for_B0_optimization
     num_iter_for_B0_optimization += 1
-    print "* num_iter_for_B0_optimization = " +  str(num_iter_for_B0_optimization) + " *"
+    print("* num_iter_for_B0_optimization = " +  str(num_iter_for_B0_optimization) + " *")
 
     # B0
     B0 = x[0]
-    print "B0 = " + str(B0)
+    print("B0 = " + str(B0))
 
     # B0 variation
     global B0_old
     if (num_iter_for_B0_optimization > 1):
         B0_rel_var = (B0-B0_old)/B0_old
-        print "B0_old = " + str(B0_old)
-        print "B0_rel_var = " + str(100*B0_rel_var) + " %"
+        print("B0_old = " + str(B0_old))
+        print("B0_rel_var = " + str(100*B0_rel_var) + " %")
     B0_old = B0
 
     # prepare input file
@@ -71,7 +71,7 @@ def cost_function_for_C0_and_B0_optimization2(x, dx):
                                     case_for_B0_optimization.tol)
     C0 = optimize_C0_or_Tmax_based_on_volumes([case])
     os.system("mv Error.dat Error_for_C0_optimization-Iter" + str(num_iter_for_B0_optimization) + ".dat ")
-    print "C0 = " + str(C0) + " kPa"
+    print("C0 = " + str(C0) + " kPa")
 
     # extract data
     os.system("abq6132 python ../extract_fluid_cavity_volumes_and_pressures.py Heart")
@@ -87,7 +87,7 @@ def cost_function_for_C0_and_B0_optimization2(x, dx):
     global err, V1, V2, P1, P2, err0
     error = sum([err.subs(V1, V1_).subs(V2, V2_).subs(P1, P1_).subs(P2, P2_).doit() for (V1_, V2_, P1_, P2_) in zip(normalized_volumes[:-1], normalized_volumes[1:], pressures[:-1], pressures[1:])])**0.5 / err0
     error = float(error)
-    print "error = " + str(error)
+    print("error = " + str(error))
 
     # save error
     if (num_iter_for_B0_optimization == 1):
@@ -141,6 +141,6 @@ def optimize_C0_and_B0_based_on_Klotz_curve2(case_):
         B0_old = case_for_B0_optimization.B0_ini
         opt.optimize([case_for_B0_optimization.B0_ini])
     except ConvergedOptimizationException:
-        print "ConvergedOptimizationException"
+        print("ConvergedOptimizationException")
     except FailedComputationException:
-        print "FailedComputationException"
+        print("FailedComputationException")

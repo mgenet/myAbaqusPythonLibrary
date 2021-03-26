@@ -2,9 +2,9 @@
 
 ### ---------------------------------------------------------------- ###
 
-from wait_for_file_to_appear           import *
-from wait_for_file_to_disappear        import *
-from wait_for_string_to_appear_in_file import *
+from .wait_for_file_to_appear           import *
+from .wait_for_file_to_disappear        import *
+from .wait_for_string_to_appear_in_file import *
 
 ### ---------------------------------------------------------------- ###
 

@@ -48,4 +48,4 @@ def get_nodes_from_node_set(mesh_file_name, node_set_name):
 
     mesh_file.close()
 
-    return {node_num:node_pos for node_num,node_pos in nodes_all.iteritems() if node_num in nodes_sel}
+    return {node_num:node_pos for node_num,node_pos in nodes_all.items() if node_num in nodes_sel}

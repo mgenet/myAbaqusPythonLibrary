@@ -13,7 +13,7 @@ def wait_for_file_to_disappear(filename, sleep=1., verbose=True):
     while os.path.exists(filename):
         if (verbose): sys.stdout.write(".")
         time.sleep(sleep)
-    if (verbose): print "."
+    if (verbose): print(".")
     time.sleep(sleep)
     return
 

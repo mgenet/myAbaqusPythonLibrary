@@ -48,4 +48,4 @@ def get_elems_from_elem_set(mesh_file_name, elem_set_name):
 
     mesh_file.close()
 
-    return {elem_num:elem_nodes for elem_num,elem_nodes in elems_all.iteritems() if elem_num in elems_sel}
+    return {elem_num:elem_nodes for elem_num,elem_nodes in elems_all.items() if elem_num in elems_sel}

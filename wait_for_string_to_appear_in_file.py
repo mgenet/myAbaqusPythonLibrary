@@ -13,7 +13,7 @@ def wait_for_string_to_appear_in_file(couples, sleep, verbose=True):
         if (verbose): sys.stdout.write(".")
         for (string,filename) in couples:
             if (string in open(filename).read()):
-                if (verbose): print "."
+                if (verbose): print(".")
                 time.sleep(sleep)
                 return
         time.sleep(sleep)

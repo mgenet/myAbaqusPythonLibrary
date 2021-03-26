@@ -10,7 +10,7 @@ import sympy
 
 import nlopt
 
-from wait_for_job_to_complete import *
+from .wait_for_job_to_complete import *
 
 ######################################################### EXCEPTIONS ###
 
@@ -25,7 +25,7 @@ def cost_function_for_C0_and_B0_optimization(params, dx):
     # num_iter
     global num_iter
     num_iter += 1
-    print "* num_iter = " +  str(num_iter) + " *"
+    print("* num_iter = " +  str(num_iter) + " *")
 
     # params
     C0 = params[0]
@@ -34,20 +34,20 @@ def cost_function_for_C0_and_B0_optimization(params, dx):
         D0 = params[2]
     else:
         D0 = 0.40
-    print "C0 = " + str(C0) + " kPa"
-    print "B0 = " + str(B0)
-    if (len(params) == 3): print "D0 = " + str(D0)
+    print("C0 = " + str(C0) + " kPa")
+    print("B0 = " + str(B0))
+    if (len(params) == 3): print("D0 = " + str(D0))
 
     # params variation
     global params_old
     if (num_iter > 1):
-        print "C0_old = " + str(params_old[0]) + " kPa"
-        print "B0_old = " + str(params_old[1])
-        if (len(params) == 3): print "D0_old = " + str(params_old[2])
+        print("C0_old = " + str(params_old[0]) + " kPa")
+        print("B0_old = " + str(params_old[1]))
+        if (len(params) == 3): print("D0_old = " + str(params_old[2]))
         params_rel_var = [(param-param_old)/param_old for (param, param_old) in zip(params, params_old)]
-        print "C0_rel_var = " + str(100*params_rel_var[0]) + " %"
-        print "B0_rel_var = " + str(100*params_rel_var[1]) + " %"
-        if (len(params) == 3): print "D0_rel_var = " + str(100*params_rel_var[2]) + " %"
+        print("C0_rel_var = " + str(100*params_rel_var[0]) + " %")
+        print("B0_rel_var = " + str(100*params_rel_var[1]) + " %")
+        if (len(params) == 3): print("D0_rel_var = " + str(100*params_rel_var[2]) + " %")
     params_old = [param_old for param_old in params]
 
     # prepare input file
@@ -75,7 +75,7 @@ def cost_function_for_C0_and_B0_optimization(params, dx):
         os.system("abq6132 python ../extract_fluid_cavity_volumes_and_pressures.py Heart")
         volumes = [float(volume)/1e3 for volume in open("Heart.volumes.dat", "r").read()[1:-1].split(", ")]
         ejection_fraction = 100 * (volumes[-1] - volumes[0]) / volumes[-1]
-        print "ejection fraction = " + str(ejection_fraction)
+        print("ejection fraction = " + str(ejection_fraction))
         pressures = [float(pressure)/0.133322 for pressure in open("Heart.pressures.dat", "r").read()[1:-1].split(", ")]
         assert (len(volumes) == len(pressures)), "Volumes and Pressures should have same length. Aborting."
         normalized_volumes = [(volume-volumes[0])/(volumes[-1]-volumes[0]) for volume in volumes]
@@ -112,14 +112,14 @@ set ylabel "pressure (mmHg)"
         global err, V1, V2, P1, P2, err0
         error_PV = sum([err.subs(V1, V1_).subs(V2, V2_).subs(P1, P1_).subs(P2, P2_).doit() for (V1_, V2_, P1_, P2_) in zip(normalized_volumes[:-1], normalized_volumes[1:], pressures[:-1], pressures[1:])])**0.5 / err0
         error_PV = float(error_PV)
-        print "error_PV = " + str(error_PV)
+        print("error_PV = " + str(error_PV))
 
         global target
         error_EF = abs(ejection_fraction-target)/target
-        print "error_EF = " + str(error_EF)
+        print("error_EF = " + str(error_EF))
 
         error = error_PV + error_EF
-        print "error = " + str(error)
+        print("error = " + str(error))
     else:
         error_PV = 1.
         ejection_fraction = 0.
@@ -180,6 +180,6 @@ def optimize_C0_and_B0_based_on_Klotz_curve(name_, target_, params, algo=nlopt.G
         params_old = [0. for param in params]
         opt.optimize([param[0] for param in params])
     except ConvergedOptimizationException:
-        print "ConvergedOptimizationException"
+        print("ConvergedOptimizationException")
     except FailedComputationException:
-        print "FailedComputationException"
+        print("FailedComputationException")
